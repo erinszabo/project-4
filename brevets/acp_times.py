@@ -14,6 +14,9 @@ import math
 #  same arguments.
 #
 
+# I know my functions aren't very efficient but they are readable...
+# may optimize later if I can.
+
 
 def open_time(control_dist_km, brevet_dist_km, brevet_start_time):
     """
@@ -27,7 +30,12 @@ def open_time(control_dist_km, brevet_dist_km, brevet_start_time):
        An arrow object indicating the control open time.
        This will be in the same time zone as the brevet start time.
     """
-    return arrow.now()
+    o_hours, o_mins = open(control_dist_km)
+    open_t = brevet_start_time.replace(hour =+ o_hours, minute =+ o_mins)
+    return open_t
+    #return arrow.now()
+
+
 
 
 def close_time(control_dist_km, brevet_dist_km, brevet_start_time):
@@ -42,7 +50,10 @@ def close_time(control_dist_km, brevet_dist_km, brevet_start_time):
        An arrow object indicating the control close time.
        This will be in the same time zone as the brevet start time.
     """
-    return arrow.now()
+    c_hours, c_mins = close(control_dist_km)
+    close_t = brevet_start_time.replace(hour =+ c_hours, minute =+ c_mins)
+    return close_t
+    #return arrow.now()
 
 
 def ctrl_time(dist, speed):
