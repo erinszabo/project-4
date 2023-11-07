@@ -31,7 +31,8 @@ def open_time(control_dist_km, brevet_dist_km, brevet_start_time):
        This will be in the same time zone as the brevet start time.
     """
     o_hours, o_mins = open(control_dist_km)
-    open_t = brevet_start_time.replace(hour =+ o_hours, minute =+ o_mins)
+    open_t = brevet_start_time.shift(hour =+ o_hours, minute =+ o_mins)
+    # trying shift instead of replace
     return open_t
     #return arrow.now()
 
@@ -51,7 +52,7 @@ def close_time(control_dist_km, brevet_dist_km, brevet_start_time):
        This will be in the same time zone as the brevet start time.
     """
     c_hours, c_mins = close(control_dist_km)
-    close_t = brevet_start_time.replace(hour =+ c_hours, minute =+ c_mins)
+    close_t = brevet_start_time.shift(hour =+ c_hours, minute =+ c_mins)
     return close_t
     #return arrow.now()
 
