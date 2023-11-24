@@ -3,7 +3,6 @@
 Fall 2023
 
 
-
 ### ACP controle times
 
 This project consists of a web application that is based on RUSA's online calculator. The algorithm for calculating controle times is described here [https://rusa.org/pages/acp-brevet-control-times-calculator](https://rusa.org/pages/acp-brevet-control-times-calculator). Additional background information is given here [https://rusa.org/pages/rulesForRiders](https://rusa.org/pages/rulesForRiders). The description is ambiguous, but the examples help.
@@ -53,7 +52,6 @@ Calculation of a control's `closing` time is based on the `minimum` speed.
 Both closing and opening times are calculated by dividing the control distance by the associated speed. We start with the speed in the table across from the control location, but for distances larger than 200, it becomes a little more complex. 
 
 When controls are larger than 200km, we break them uo into about 200km pieces. We first take 200 divided by the speed associated with the full distance. Then we add on the same 200 divided by the next speed above it in the table above. We continue with this pattern until we are at either the top of the table (in which case we divide the remainder of the control by the speed at the top of the table) or we have less than 200 of the brevet remaining (in which case we divide the remaining distance by the speed we are currently on). Examples are given at https://rusa.org/pages/acp-brevet-control-ti for further understanding. 
-
 
 
 ## Original Authors
