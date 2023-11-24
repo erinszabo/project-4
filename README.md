@@ -1,66 +1,61 @@
-# UOCIS322 - Project 4 #
-You'll learn how to write test cases and test your code, along with more JQuery.
+# UO CS322 - Project 4 #
+### Erin Szabo
+Fall 2023
 
-## Overview
 
-You will reimplement RUSA ACP controle time calculator with Flask and AJAX.
-> That's *"controle"* with an *e*, because it's French, although "control" is also accepted. Controls are points where a rider must obtain proof of passage, and control[e] times are the minimum and maximum times by which the rider must arrive at the location.
 
 ### ACP controle times
 
-This project consists of a web application that is based on RUSA's online calculator. The algorithm for calculating controle times is described here [https://rusa.org/pages/acp-brevet-control-times-calculator](https://rusa.org/pages/acp-brevet-control-times-calculator). Additional background information is given here [https://rusa.org/pages/rulesForRiders](https://rusa.org/pages/rulesForRiders). The description is ambiguous, but the examples help. Part of finishing this project is clarifying anything that is not clear about the requirements, and documenting it clearly. 
+This project consists of a web application that is based on RUSA's online calculator. The algorithm for calculating controle times is described here [https://rusa.org/pages/acp-brevet-control-times-calculator](https://rusa.org/pages/acp-brevet-control-times-calculator). Additional background information is given here [https://rusa.org/pages/rulesForRiders](https://rusa.org/pages/rulesForRiders). The description is ambiguous, but the examples help.
+This project is essentially replacing the calculator here [https://rusa.org/octime_acp.html](https://rusa.org/octime_acp.html). 
 
-We are essentially replacing the calculator here [https://rusa.org/octime_acp.html](https://rusa.org/octime_acp.html). We can also use that calculator to clarify requirements and develop test data. 
+## Application Setup
+-  cd into `brevets/` 
+-  Build the flask app image using
+    ```
+    docker build -t some-image-name .
+    ```
+- Run the container using
 
-## Tasks
+  ```
+  docker run -d -p 5001:5000 some-image-name
+  ```
+ - Launch `http://hostname:5001` using your web browser 
 
-* Implement the logic in `acp_times.py` based on the algorithm linked above.
 
-* Create test cases using the original website, and write test suites for your project.
-	* Based on what was discussed in the lecture, create test cases, try them in the original website, and check if your functions correctly calculate the times.
-	* This will effectively replicate the calulator above.
 
-* Edit the template and Flask app so that the required remaining arugments are passed along.
-	* Currently the miles to kilometers (and some other basic stuff) is implemented with AJAX. 
-	* The remainder is left to you.
+## Process Breakdown
 
-* As always, revise the README file, and add your info to `Dockerfile`. These have points!
-	* **NOTE:** This time, you should outline the application, the algorithm, and how to use start (docker instructions, web app instructions). **Make sure you're thorough, otherwise you may not get all the points.**
+* Start by selecting a brevet start date and time
+* Next select the brevet length. This is the entire length of the brevet. A brevet can be 200, 300, 400, 600, or 1000 kilometers
+* Now you can start entering your controls.
+	* controls are like checkpoints along the brevet, so each control should be less than the length of the brevet (or up to 20% past the total brevet distance as the original calculator) and they each should be further from the starting point than the last (the application will still function if you enter them in any other order).
+	* you can optionaly enter a location name for each brevet
+	* you can enter these distances in either miles or kilometers, the application will automatically update the measure you do not use as it calculates the control's opening and closing times information.
 
-* As always, submit your `credentials.ini` through Canvas. It should contain your name and git repo URL.
-
-### Testing
-
-A suite of nose test cases is a requirement of this project. Design the test cases based on an interpretation of rules here [https://rusa.org/pages/acp-brevet-control-times-calculator](https://rusa.org/pages/acp-brevet-control-times-calculator). Be sure to test your test cases: You can use the current brevet time calculator [https://rusa.org/octime_acp.html](https://rusa.org/octime_acp.html) to check that your expected test outputs are correct. While checking these values once is a manual operation, re-running your test cases should be automated in the usual manner as a Nose test suite.
-
-To make automated testing more practical, your open and close time calculations should be in a separate module. Because I want to be able to use my test suite as well as yours, I will require that module be named `acp_times.py` and contain the two functions I have included in the skeleton code (though revised, of course, to return correct results).
-
-We should be able to run your test suite by changing to the `brevets` directory and typing `nosetests`. All tests should pass. You should have at least 5 test cases, and more importantly, your test cases should be chosen to distinguish between an implementation that correctly interprets the ACP rules and one that does not.
-
-## Grading Rubric
-
-* If your code works as expected: 100 points. This includes:
-
-	* Completing the frontend in `calc.html`.
+	As controls are entered, their `opening` and `closing` times will be calculated and displayed. These calculations will be explained and illistrated with the table below.
 	
-	* Completing the Flask app accordingly (`flask_brevets.py`).
-	
-	* Implementing the logic in `acp_times.py`.
-	
-	* Updating `README` with a clear specification.
-	
-	* Writing at least **five** correct tests using nose (put them in `tests`, follow Project 3 if necessary) and all pass.
+The calculation of a control's `opening` time is based on the `maximum` speed. 
 
-* If the algorithm is incorrect, 25 points will be docked off.
+Calculation of a control's `closing` time is based on the `minimum` speed.
 
-* If the webpage does not work as expected (JQuery or Flask failing to correctly fill in the information, etc.), 25 points will be docked off.
 
-* If the test cases are missing/not functional/do not all pass, 5 points will be docked off per each (25 points total).
 
-* If `README` is not clear, missing or not edited, or `Dockerfile` is not updated, up to 15 points will be docked off.
 
-* If none of the functionalities work, 10 points will be given assuming `credentials.ini` is submitted with the correct repo URL, and `Dockerfile` builds and runs without any errors. 
+| Control location (km)      | Minimum Speed (km/hr) | Maximum Speed (km/hr) |    
+| ----------- | ----------- | ----------- | 
+| 0 - 200     | 15          | 34 | 
+| 200 - 400   | 15          | 32 | 
+| 400 - 600   | 15          | 30 | 
+| 600 - 1000  | 11.428      | 28 | 
+| 1000 - 1300 | 13.333      | 26 | 
 
-## Authors
+Both closing and opening times are calculated by dividing the control distance by the associated speed. We start with the speed in the table across from the control location, but for distances larger than 200, it becomes a little more complex. 
+
+When controls are larger than 200km, we break them uo into about 200km pieces. We first take 200 divided by the speed associated with the full distance. Then we add on the same 200 divided by the next speed above it in the table above. We continue with this pattern until we are at either the top of the table (in which case we divide the remainder of the control by the speed at the top of the table) or we have less than 200 of the brevet remaining (in which case we divide the remaining distance by the speed we are currently on). Examples are given at https://rusa.org/pages/acp-brevet-control-ti for further understanding. 
+
+
+
+## Original Authors
 
 Michal Young, Ram Durairajan. Updated by Ali Hassani.

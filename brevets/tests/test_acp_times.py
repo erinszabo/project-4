@@ -3,6 +3,10 @@ Nose tests for acp_times.py
 
 Write your tests HERE AND ONLY HERE.
 """
+# Writing at least **five** correct tests using nose 
+# (put them in `tests`, follow Project 3 if necessary) and 
+# all pass.
+
 
 # test if the last distance is less than the total distance, 
 # an exception is thrown
